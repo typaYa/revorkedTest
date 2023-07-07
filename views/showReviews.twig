@@ -11,25 +11,25 @@
 <body>
 
 <style>
-    .table {
+    .reviews-table {
         margin-top: 30px;
         width: 100%;
         margin-bottom: 20px;
         border: 1px solid #dddddd;
         border-collapse: collapse;
     }
-    .table th {
+    .reviews-table th {
         font-weight: bold;
         padding: 5px;
         background: #efefef;
         border: 1px solid #dddddd;
     }
-    .table td {
+    .reviews-table td {
         border: 1px solid #dddddd;
         padding: 5px;
     }
 </style>
-<table class="table">
+<table class="reviews-table">
     <thead>
     <tr>
         <th>ID</th>
@@ -53,8 +53,36 @@
 </table>
 
 {% for i in 0..(count_page-1) %}
-    <a href="?page={{ i }}">{{ i+1 }}</a>
+    <a class="pagination-link" href="?page={{ i }}">{{ i+1 }}</a>
 {% endfor %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Получаем ссылки на кнопки пагинации
+        var paginationLinks = document.querySelectorAll('.pagination-link');
 
+        // Обрабатываем нажатие на каждую кнопку пагинации
+        paginationLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                // Отменяем стандартное действие ссылки
+                event.preventDefault();
+
+                // Получаем значение страницы из атрибута href
+                var page = this.getAttribute('href').split('=')[1];
+
+                // Выполняем AJAX-запрос для получения данных
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/api/feedbacks?page=' + page, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        // Обновляем содержимое таблицы с отзывами
+                        var reviewsTable = document.querySelector('.reviews-table');
+                        reviewsTable.innerHTML = xhr.responseText;
+                    }
+                };
+                xhr.send();
+            });
+        });
+    });
+</script>
 </body>
 </html>
