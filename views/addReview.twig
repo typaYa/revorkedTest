@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="../assets/style.css"> -->
 </head>
 <body>
 <style>
@@ -37,11 +38,13 @@
 
     }
 </style>
-<form class="form"id="feedback-form" action="" method="post">
+
+<form class="form" id="feedback-form" action="" method="post">
     <p style="margin-top: 120px;color: #656565">Ваш отзыв</p>
     <input class="text" type="text" name="text" placeholder="Введите ваш отзыв">
     <input class="submit" type="submit" name="submit" value="Отправить">
 </form>
+<!-- <script src="../assets/script.js"></script> -->
 <script>
     $(document).ready(function () {
         $("form").submit(function () {
@@ -50,8 +53,8 @@
             // Добавление решётки к имени ID
             var formNm = $('#' + formID);
             $.ajax({
-                type: "POST",
-                url: '/send.php',
+                type: "post",
+                url: '/assets/send.php',
                 data: formNm.serialize(),
                 beforeSend: function () {
                     // Вывод текста в процессе отправки
