@@ -67,8 +67,8 @@ $app->get('/api/feedbacks', function (Request $request, Response $response, $arg
 });
 
 
-$app->get('/api/feedbacks/delete',function (Request $request, Response $response,$args) use ($RepositoriesReviews){
-    $id = 86;
+$app->get('/api/feedbacks/delete/{id}',function (Request $request, Response $response,$args) use ($RepositoriesReviews){
+    $id = $args['id'];
     $RepositoriesReviews->deleteReviewById($id);
     $response->getBody()->write("Удалено");
     return $response;
