@@ -41,6 +41,12 @@ $basicAuthMiddleware = function (Request $request, RequestHandlerInterface $hand
     return $handler->handle($request);
 };
 
+
+
+$app->get('/', function (Request $request, Response $response, $args) {
+    $response->getBody()->write("Hello world!");
+    return $response;
+});
 $app->map(['GET','POST'],'/api/feedbacks/addReview', function ($request, $response, $args) use ($twig) {
 
     $template = $twig->load('addReview.twig');
@@ -49,30 +55,30 @@ $app->map(['GET','POST'],'/api/feedbacks/addReview', function ($request, $respon
     return $response;
 });
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
 
+$app->map(['GET','POST'],'/api/feedbacks', function (Request $request, Response $response, $args) use ($RepositoriesReviews,$twig) {
 
-
-$app->get('/api/feedbacks', function (Request $request, Response $response, $args) use ($RepositoriesReviews) {
     $data = $request->getQueryParams();
     $page = $data['page'];
     $perPage = 20;
     $reviews = $RepositoriesReviews->getReviewsByPage($page, $perPage);
-    $response->getBody()->write(json_encode($reviews));
+    $count = $RepositoriesReviews->getAllReviews();
+    $count_page = ceil($count/$perPage);
+    $template = $twig->load('showReviews.twig');
+    $html = $template->render(['reviews'=>$reviews,'count_page'=>$count_page]);
+    $response->getBody()->write($html);
     return $response;
 
 });
 
 
-$app->get('/api/feedbacks/delete',function (Request $request, Response $response,$args) use ($RepositoriesReviews){
-    $id = 86;
+$app->get('/api/feedbacks/delete/{id}',function (Request $request, Response $response,$args) use ($RepositoriesReviews){
+    $id = $args['id'];
     $RepositoriesReviews->deleteReviewById($id);
     $response->getBody()->write("Удалено");
     return $response;
 })->add($basicAuthMiddleware);
+
 $app->get('/api/feedbacks/{id}', function (Request $request, Response $response, $args) use ($RepositoriesReviews) {
     $id = $args['id'];
     $review = $RepositoriesReviews->SearchReview($id);
